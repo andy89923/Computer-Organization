@@ -8,12 +8,24 @@ module Full_Adder(
     
 	// implement full adder circuit, your code starts from here.
 	// use half adder in this module, fulfill I/O ports connection.
-    Half_Adder HAD (
-        .In_A(),
-        .In_B(),
-        .Sum(),
-        .Carry_out()
+    wire W1, W2, W3;
+
+    Half_Adder HAD1 (
+        .In_A(In_A),
+        .In_B(In_B),
+        .Sum(W1),
+        .Carry_out(W2)
     );
+
+
+    Half_Adder HAD2 (
+        .In_A(W1),
+        .In_B(Carry_in),
+        .Sum(Sum),
+        .Carry_out(W3)
+    );
+
+    or or1(Carry_out, W2, W3);
     
     
 endmodule

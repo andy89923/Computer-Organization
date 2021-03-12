@@ -53,7 +53,10 @@ always@(posedge clk) begin
         counter <= counter;
 end
 
-
+initial begin
+    $dumpfile("gtkWave.vcd");
+    $dumpvars;
+end
 
 
 endmodule

@@ -1,0 +1,145 @@
+$date
+	Fri Mar 12 10:19:21 2021
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module testbench $end
+$var wire 1 ! sum $end
+$var wire 1 " c_out $end
+$var reg 1 # a $end
+$var reg 8 $ ans_carry [7:0] $end
+$var reg 8 % ans_sum [7:0] $end
+$var reg 1 & b $end
+$var reg 1 ' cin $end
+$var reg 1 ( clk $end
+$var reg 1 ) correct $end
+$var reg 8 * counter [7:0] $end
+$scope module FAD $end
+$var wire 1 ' Carry_in $end
+$var wire 1 " Carry_out $end
+$var wire 1 # In_A $end
+$var wire 1 & In_B $end
+$var wire 1 + W3 $end
+$var wire 1 , W2 $end
+$var wire 1 - W1 $end
+$var wire 1 ! Sum $end
+$scope module HAD1 $end
+$var wire 1 , Carry_out $end
+$var wire 1 # In_A $end
+$var wire 1 & In_B $end
+$var wire 1 - Sum $end
+$upscope $end
+$scope module HAD2 $end
+$var wire 1 + Carry_out $end
+$var wire 1 - In_A $end
+$var wire 1 ' In_B $end
+$var wire 1 ! Sum $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+x-
+x,
+x+
+b1000 *
+1)
+0(
+x'
+x&
+b1101001 %
+b10111 $
+x#
+x"
+x!
+$end
+#5000
+b111 *
+1(
+#10000
+0"
+0!
+0+
+0-
+0,
+0(
+0'
+0&
+0#
+#15000
+b110 *
+1(
+#20000
+1!
+1-
+0(
+1&
+#25000
+b101 *
+1(
+#30000
+0(
+0&
+1#
+#35000
+b100 *
+1(
+#40000
+0!
+1"
+0-
+1,
+0(
+1&
+#45000
+b11 *
+1(
+#50000
+0"
+1!
+0,
+0(
+1'
+0&
+0#
+#55000
+b10 *
+1(
+#60000
+1"
+0!
+1+
+1-
+0(
+1&
+#65000
+b1 *
+1(
+#70000
+0(
+0&
+1#
+#75000
+b0 *
+1(
+#80000
+1!
+0+
+0-
+1,
+0(
+1&
+#85000
+0)
+1(
+#90000
+0(
+#95000
+1(
+#100000
+0(

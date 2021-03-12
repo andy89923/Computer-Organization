@@ -8,7 +8,7 @@ module Half_Adder(
     
     // implement half adder circuit, your code starts from here.
 	// gate(output, input1, input2)
-    xor(, , );
-	and(, , );
+    xor(Sum, In_A, In_B);
+	and(Carry_out, In_A, In_B);
 	
 endmodule
