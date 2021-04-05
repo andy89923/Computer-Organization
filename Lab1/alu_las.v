@@ -1,4 +1,4 @@
-module alu_top(
+module alu_las(
                src1,       //1 bit source 1 (input)
                src2,       //1 bit source 2 (input)
                less,       //1 bit less     (input)
@@ -7,7 +7,9 @@ module alu_top(
                cin,        //1 bit carry in (input)
                operation,  //operation      (input)
                result,     //1 bit result   (output)
-               cout       //1 bit carry out(output)
+               cayot,      //1 bit carry out(output)
+               set,         //1 bit sign bit(set)
+               ovr         //1 bit overflow
                );
 
 input         src1;
@@ -19,23 +21,42 @@ input         cin;
 input [2-1:0] operation;
 
 output        result;
-output        cout;
+output        set;
+output        ovr;
+output        cayot;
 
 reg           result;
 
-wire src1_temp, src2_temp;
+reg ovr, cayot;
+
+wire src1_temp, src2_temp, cout;
 
 assign src1_temp = src1 ^ A_invert;
 assign src2_temp = src2 ^ B_invert;
+assign set = sum;
 
 Full_Adder FA(src1_temp, src2_temp, cin, sum, cout);
 
-always@( * ) begin
+always@( src1_temp or src2_temp or operation ) begin
      case(operation)
           2'b00: result = src1_temp & src2_temp; // 00 -> And
           2'b01: result = src1_temp | src2_temp; // 01 -> Or
           2'b10: result = sum;                   // 10 -> Add
           2'b11: result = less;
+     endcase
+end
+
+// Overflow Detection
+always@( * ) begin
+     ovr = cin ^ cout;
+end
+
+always @(*) begin
+     case(operation)
+          2'b10: cayot = cout; // Add
+          2'b01: cayot = 1'b0;
+          2'b00: cayot = 1'b0;
+          2'b11: cayot = 1'b0;
      endcase
 end
 

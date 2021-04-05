@@ -1,0 +1,7 @@
+Build Finished
+VCD info: dumpfile gtkWave.vcd opened for output.
+***************************************************
+ Congratulation! All data are correct! 
+***************************************************
+** VVP Stop(0) **
+** Flushing output streams.
