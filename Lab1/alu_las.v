@@ -37,7 +37,7 @@ assign set = sum;
 
 Full_Adder FA(src1_temp, src2_temp, cin, sum, cout);
 
-always@( src1_temp or src2_temp or operation ) begin
+always@( * ) begin
      case(operation)
           2'b00: result = src1_temp & src2_temp; // 00 -> And
           2'b01: result = src1_temp | src2_temp; // 01 -> Or
@@ -48,9 +48,15 @@ end
 
 // Overflow Detection
 always@( * ) begin
-     ovr = cin ^ cout;
+     case(operation)
+          2'b10: ovr = cin ^ cout; // Add
+          2'b01: ovr = 1'b0;
+          2'b00: ovr = 1'b0;
+          2'b11: ovr = 1'b0;
+     endcase
 end
 
+// carry Out
 always @(*) begin
      case(operation)
           2'b10: cayot = cout; // Add
