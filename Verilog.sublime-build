@@ -1,14 +1,15 @@
 {
 	"variants": [
-		{
-			"name" : "Build",
-		    "cmd" : ["iverilog -o Simulator *.v && echo 'Build Finished'" ],
+		{	
+			"name" : "Run",
+		    "cmd" : ["vvp -n ${file_path}/Simulator" ],
 		    "working_dir" : "$file_path",
 		    "shell" : true
+
 		},
 		{
 			"name" : "Build & Run",
-		    "cmd" : ["iverilog -o Simulator *.v && echo 'Build Finished' && vvp ${file_path}/Simulator" ],
+		    "cmd" : ["iverilog -o Simulator *.v && echo 'Build Finished' && vvp -n ${file_path}/Simulator" ],
 		    "working_dir" : "$file_path",
 		    "shell" : true
 		}
