@@ -18,8 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Data_Memory
-(
+module Data_Memory (
 	clk_i,
 	addr_i,
 	data_i,
@@ -98,4 +97,3 @@ always@(addr_i or MemRead_i) begin
 end
 
 endmodule
-

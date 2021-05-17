@@ -1,3 +1,5 @@
+// 0816153
+
 `timescale 1ns/1ps
 
 module Simple_Single_CPU(
@@ -13,6 +15,7 @@ input   rst_i;
 
 wire [32-1:0] pc;
 wire [32-1:0] nxt_pc0, nxt_pc1, fin_pc;
+wire [32-1:0] jup_ads, pc_ch0;
 
 // Greate componentes
 ProgramCounter PC(
@@ -26,6 +29,12 @@ Adder Adder1(
     .src1_i(32'd4),     
     .src2_i(pc),     
     .sum_o(nxt_pc0)    
+);
+
+Shift_Left_Two_with_prv JumpAdd(
+    .data_i(instr[25:0]),
+    .prv_i(nxt_pc0[31:28]),
+    .data_o(jup_ads)
 );
 
 wire [32-1:0] instr;
@@ -49,9 +58,9 @@ MUX_2to1 #(.size(5)) Mux_Write_Reg(
 );	
 
 wire [32-1:0] rd1, rd2;
-wire [32-1:0] wrt_dat;
+wire [32-1:0] wrt_dat, alu_out;
 
-Reg_File RF(
+Reg_File Registers(
     .clk_i(clk_i),      
     .rst_i(rst_i) ,     
     .RSaddr_i(instr[25:21]) ,  
@@ -63,13 +72,20 @@ Reg_File RF(
     .RTdata_o(rd2)   
 );
 
+wire MemToReg, Jump, MemRead, MemWrite;
+wire [32-1:0] read_data;
+
 Decoder Decoder(
     .instr_op_i(instr[31:26]), 
     .RegWrite_o(RegWrite), 
     .ALU_op_o(aluOp),   
     .ALUSrc_o(aluSrc),   
     .RegDst_o(RegDst),   
-	.Branch_o(Branch)
+	.Branch_o(Branch),
+    .MemToReg_o(MemToReg),
+    .Jump_o(Jump),
+    .MemRead_o(MemRead),
+    .MemWrite_o(MemWrite)
 );
 
 wire [4-1:0] aluCTtoalu;
@@ -102,8 +118,24 @@ ALU ALU(
     .src1_i(rd1),
     .src2_i(alu_src),
     .ctrl_i(aluCTtoalu),
-    .result_o(wrt_dat),
+    .result_o(alu_out),
 	.zero_o(zeo)
+);
+
+MUX_2to1 #(.size(32)) Mux_Write_Dat(
+    .data0_i(alu_out),
+    .data1_i(read_data),
+    .select_i(MemToReg),
+    .data_o(wrt_dat)
+);
+
+Data_Memory Data_Memory(
+    .clk_i(clk_i),
+    .addr_i(alu_out),
+    .data_i(rd2),
+    .MemRead_i(MemRead),
+    .MemWrite_i(MemWrite),
+    .data_o(read_data)
 );
 
 wire [32-1:0] aft_sft;
@@ -123,14 +155,18 @@ wire nxt_slc;
 
 and pcSLC(nxt_slc, Branch, zeo);
 	
-MUX_2to1 #(.size(32)) Mux_PC_Source(
+MUX_2to1 #(.size(32)) Mux_PC_Source_1(
     .data0_i(nxt_pc0),
     .data1_i(nxt_pc1),
     .select_i(nxt_slc),
+    .data_o(pc_ch0)
+);
+
+MUX_2to1 #(.size(32)) Mux_PC_Source_2(
+    .data0_i(pc_ch0),
+    .data1_i(jup_ads),
+    .select_i(Jump),
     .data_o(fin_pc)
-);	
+); 
 
 endmodule
-		  
-
-

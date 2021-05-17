@@ -1,3 +1,5 @@
+// 0816153
+
 `timescale 1ns/1ps
 module ALU_Ctrl(
     funct_i,
@@ -22,7 +24,7 @@ wire op3 = 1'b0;
 
 //Select exact operation
 always @(*) begin
-	// Not addi or slti, -> R-format & Beq
+	// Not addi or slti, -> R-format & Beq & sw & lw
 	if (ALUOp_i[2] == 1'b0) begin
 		ALUCtrl_o[3] <= op3;
 		ALUCtrl_o[2] <= op2;
@@ -31,19 +33,12 @@ always @(*) begin
 	end
 	else begin
 		case(ALUOp_i)
-			3'b110: ALUCtrl_o <= 4'b0010;
+			3'b110: ALUCtrl_o <= 4'b0010; 
 			3'b101: ALUCtrl_o <= 4'b0111;
 			default:
-				ALUCtrl_o = 4'b0000;
+				ALUCtrl_o = 4'b0010;
 		endcase
 	end
 end
 
 endmodule     
-
-
-
-
-
-                    
-                    
