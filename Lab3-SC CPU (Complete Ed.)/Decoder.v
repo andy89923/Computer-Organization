@@ -3,6 +3,7 @@
 `timescale 1ns/1ps
 module Decoder(
     instr_op_i,
+    extra_op_i,
 	RegWrite_o,
 	ALU_op_o,
 	ALUSrc_o,
@@ -16,15 +17,16 @@ module Decoder(
      
 // I/O ports
 input  [6-1:0] instr_op_i;
+input  [6-1:0] extra_op_i;
 
 output         RegWrite_o;
 output [3-1:0] ALU_op_o;
 output         ALUSrc_o;
-output         RegDst_o;
+output [2-1:0] RegDst_o;
 output         Branch_o;
 
-output MemToReg_o;
-output Jump_o;
+output [2-1:0] MemToReg_o;
+output [2-1:0] Jump_o;
 output MemRead_o;
 output MemWrite_o;
 
@@ -33,11 +35,11 @@ output MemWrite_o;
 reg    [3-1:0] ALU_op_o;
 reg            ALUSrc_o;
 reg            RegWrite_o;
-reg            RegDst_o;
+reg    [2-1:0] RegDst_o;
 reg            Branch_o;
 
-reg MemToReg_o;
-reg Jump_o;
+reg [2-1:0] MemToReg_o;
+reg [2-1:0] Jump_o;
 reg MemRead_o;
 reg MemWrite_o;
 
@@ -71,27 +73,30 @@ wire stwd = ( instr_op_i[5]) & (~instr_op_i[4]) & ( instr_op_i[3]) &
 wire jump = (~instr_op_i[5]) & (~instr_op_i[4]) & (~instr_op_i[3]) &
 			(~instr_op_i[2]) & ( instr_op_i[1]) & (~instr_op_i[0]);
 
-
 // jal  000,011
 wire jpal = (~instr_op_i[5]) & (~instr_op_i[4]) & (~instr_op_i[3]) &
 			(~instr_op_i[2]) & ( instr_op_i[1]) & ( instr_op_i[0]);
 
-// jr   000,000
-wire jprt = (~instr_op_i[5]) & (~instr_op_i[4]) & (~instr_op_i[3]) &
-			(~instr_op_i[2]) & (~instr_op_i[1]) & (~instr_op_i[0]);
+// jr   extra instra 001,000
+wire jprt = (~extra_op_i[5]) & (~extra_op_i[4]) & ( extra_op_i[3]) &
+			(~extra_op_i[2]) & (~extra_op_i[1]) & (~extra_op_i[0]);
 
 
 always @(*) begin 
-	RegDst_o <= rfmt;
-	RegWrite_o <= rfmt | addi | slti | lowd;
+	RegDst_o[0] <= rfmt;
+	RegDst_o[1] <= jpal;
+
+	RegWrite_o <= rfmt | addi | slti | lowd | jpal;
 	Branch_o <= bieq;
 	ALUSrc_o <= addi | slti | lowd | stwd;
 	
-	MemToReg_o <= lowd;
+	MemToReg_o[0] <= lowd;
+	MemToReg_o[1] <= jpal;
 	MemRead_o <= lowd;
 	MemWrite_o <= stwd;
 
-	Jump_o <= jump;
+	Jump_o[0] <= jump | jpal;
+	Jump_o[1] <= (jprt & rfmt);
 end
 
 // ALU_OP

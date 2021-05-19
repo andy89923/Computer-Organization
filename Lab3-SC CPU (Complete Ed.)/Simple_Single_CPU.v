@@ -21,8 +21,8 @@ wire [32-1:0] jup_ads, pc_ch0;
 ProgramCounter PC(
     .clk_i(clk_i),      
     .rst_i (rst_i),     
-    .pc_in_i(fin_pc) ,   
-	.pc_out_o(pc) 
+    .pc_in_i(fin_pc), 
+	.pc_out_o(pc)
 );
 
 Adder Adder1(
@@ -46,13 +46,16 @@ Instr_Memory IM(
 
 wire [5-1:0] wrt_reg;
 
-wire RegDst, RegWrite, Branch;
+wire [2-1:0] RegDst;
+wire RegWrite, Branch;
 wire [3-1:0] aluOp;
 wire aluSrc;
 
-MUX_2to1 #(.size(5)) Mux_Write_Reg(
+MUX_4to1 #(.size(5)) Mux_Write_Reg(
     .data0_i(instr[20:16]),
     .data1_i(instr[15:11]),
+    .data2_i(5'b11111),
+    .data3_i(5'b00000),
     .select_i(RegDst),
     .data_o(wrt_reg)
 );	
@@ -63,20 +66,22 @@ wire [32-1:0] wrt_dat, alu_out;
 Reg_File Registers(
     .clk_i(clk_i),      
     .rst_i(rst_i) ,     
-    .RSaddr_i(instr[25:21]) ,  
-    .RTaddr_i(instr[20:16]) ,  
+    .RSaddr_i(instr[25:21]),
+    .RTaddr_i(instr[20:16]),  
     .RDaddr_i(wrt_reg),  
-    .RDdata_i(wrt_dat)  , 
+    .RDdata_i(wrt_dat), 
     .RegWrite_i (RegWrite),
-    .RSdata_o(rd1) ,  
+    .RSdata_o(rd1),  
     .RTdata_o(rd2)   
 );
 
-wire MemToReg, Jump, MemRead, MemWrite;
+wire [2-1:0] MemToReg, Jump;
+wire MemRead, MemWrite;
 wire [32-1:0] read_data;
 
 Decoder Decoder(
-    .instr_op_i(instr[31:26]), 
+    .instr_op_i(instr[31:26]),
+    .extra_op_i(instr[5:0]),
     .RegWrite_o(RegWrite), 
     .ALU_op_o(aluOp),   
     .ALUSrc_o(aluSrc),   
@@ -122,9 +127,11 @@ ALU ALU(
 	.zero_o(zeo)
 );
 
-MUX_2to1 #(.size(32)) Mux_Write_Dat(
+MUX_4to1 #(.size(32)) Mux_Write_Dat(
     .data0_i(alu_out),
     .data1_i(read_data),
+    .data2_i(nxt_pc0),
+    .data3_i(0),
     .select_i(MemToReg),
     .data_o(wrt_dat)
 );
@@ -143,7 +150,7 @@ wire [32-1:0] aft_sft;
 Adder Adder2(
     .src1_i(nxt_pc0),     
     .src2_i(aft_sft),     
-    .sum_o(nxt_pc1)      
+    .sum_o(nxt_pc1)
 );
 		
 Shift_Left_Two_32 Shifter(
@@ -162,9 +169,11 @@ MUX_2to1 #(.size(32)) Mux_PC_Source_1(
     .data_o(pc_ch0)
 );
 
-MUX_2to1 #(.size(32)) Mux_PC_Source_2(
+MUX_4to1 #(.size(32)) Mux_PC_Source_2(
     .data0_i(pc_ch0),
     .data1_i(jup_ads),
+    .data2_i(rd1),
+    .data3_i(0),
     .select_i(Jump),
     .data_o(fin_pc)
 ); 

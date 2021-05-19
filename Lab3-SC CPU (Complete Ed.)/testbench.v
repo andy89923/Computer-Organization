@@ -33,8 +33,8 @@ begin
     Start = 0;
     
     #(`CYCLE_TIME) Start = 1;
-    #(`CYCLE_TIME*15)   $stop;
-    // #(`CYCLE_TIME*140)   $stop;
+    // #(`CYCLE_TIME*15)   $stop;
+    #(`CYCLE_TIME*140)   $stop;
 end
   
 always@(posedge Clk) begin

@@ -31,7 +31,7 @@ always @(*) begin
 		ALUCtrl_o[1] <= op1;
 		ALUCtrl_o[0] <= op0;
 	end
-	else begin
+	else begin // addi & slti
 		case(ALUOp_i)
 			3'b110: ALUCtrl_o <= 4'b0010; 
 			3'b101: ALUCtrl_o <= 4'b0111;
