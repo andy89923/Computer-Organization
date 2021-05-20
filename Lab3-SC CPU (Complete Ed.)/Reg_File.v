@@ -1,6 +1,5 @@
+// 0816153
 //Subject:     CO project 2 - Register File
-//--------------------------------------------------------------------------------
-//Version:     1
 
 module Reg_File(
     clk_i,
