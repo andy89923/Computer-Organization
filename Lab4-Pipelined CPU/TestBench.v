@@ -43,7 +43,7 @@ initial begin
     end
 
     // Read instruction from "CO_P4_test_x.txt"  
-    $readmemb("./testbench/CO_P4_test_2.txt", cpu.IM.instruction_file); 
+    $readmemb("./testbench/CO_P4_test_1.txt", cpu.IM.instruction_file); 
     
     // data memory
     for(i=0; i<128; i=i+1)

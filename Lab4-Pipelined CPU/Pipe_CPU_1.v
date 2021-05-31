@@ -65,6 +65,8 @@ wire invMemToReg;
 Instantiate modules
 ****************************************/
 // Instantiate the components in IF stage
+assign nxt_pc1 = otEXMEM[101:70];
+
 MUX_2to1 #(.size(32)) Mux0(
 	.data0_i(nxt_pc0),
 	.data1_i(nxt_pc1),
@@ -137,14 +139,14 @@ assign toIDEX[ 73: 42] = rd2;
 assign toIDEX[105: 74] = rd1;
 assign toIDEX[137:106] = otIFID[63:32];
 
-assign toIDEX[138] = ID_RegWrite;
+assign toIDEX[138] = ID_RegWrite & (~PCSrc);
 assign toIDEX[141:139] = ID_ALU_op;
-assign toIDEX[142] = ID_ALUSrc;
-assign toIDEX[143] = ID_RegDst;
-assign toIDEX[144] = ID_Branch;
-assign toIDEX[145] = ID_MemToReg;
-assign toIDEX[146] = ID_MemRead;
-assign toIDEX[147] = ID_MemWrite;
+assign toIDEX[142] = ID_ALUSrc & (~PCSrc);
+assign toIDEX[143] = ID_RegDst & (~PCSrc);
+assign toIDEX[144] = ID_Branch & (~PCSrc);
+assign toIDEX[145] = ID_MemToReg & (~PCSrc);
+assign toIDEX[146] = ID_MemRead & (~PCSrc);
+assign toIDEX[147] = ID_MemWrite & (~PCSrc);
 
 Pipe_Reg #(.size(148)) ID_EX(
     .clk_i(clk_i),
@@ -195,11 +197,11 @@ Adder Add_pc_branch(
 
 assign toEXMEM[36:5] = otIDEX[73:42];
 
-assign toEXMEM[102] = otIDEX[144]; // Branch
-assign toEXMEM[103] = otIDEX[147]; // MemWrite
-assign toEXMEM[104] = otIDEX[146]; // MemRead
-assign toEXMEM[105] = otIDEX[145]; // MemToReg
-assign toEXMEM[106] = otIDEX[138]; // RegWrite
+assign toEXMEM[102] = otIDEX[144] & (~PCSrc); // Branch
+assign toEXMEM[103] = otIDEX[147] & (~PCSrc); // MemWrite
+assign toEXMEM[104] = otIDEX[146] & (~PCSrc); // MemRead
+assign toEXMEM[105] = otIDEX[145] & (~PCSrc); // MemToReg
+assign toEXMEM[106] = otIDEX[138] & (~PCSrc); // RegWrite
 
 Pipe_Reg #(.size(107)) EX_MEM(
     .clk_i(clk_i),
@@ -218,6 +220,7 @@ Data_Memory DM(
 	.data_o(toMEMWB[68:37])
 );
 
+// 1 -> next is branch
 assign PCSrc = otEXMEM[102] & otEXMEM[69];
 
 assign toMEMWB[69] = otEXMEM[106]; // RegWrite
