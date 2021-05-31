@@ -32,7 +32,6 @@ Pipe_CPU_1 cpu(
 always #(`CYCLE_TIME/2) CLK = ~CLK;	
 
 initial begin
-    //handle = $fopen("P4_Result.dat");
     CLK = 0;
     RST = 0;
     count = 0;
@@ -43,8 +42,8 @@ initial begin
         cpu.IM.instruction_file[i] = 32'b0;
     end
 
-    // Read instruction from "CO_P4_test_1.txt"  
-    $readmemb("./testbench/CO_P4_test_1.txt", cpu.IM.instruction_file); 
+    // Read instruction from "CO_P4_test_x.txt"  
+    $readmemb("./testbench/CO_P4_test_2.txt", cpu.IM.instruction_file); 
     
     // data memory
     for(i=0; i<128; i=i+1)
@@ -62,26 +61,26 @@ always@(posedge CLK) begin
     count = count + 1;
 
     //print result to transcript 
-    $display("Register===========================================================\n");
-    $display("r0=%d, r1=%d, r2=%d, r3=%d, r4=%d, r5=%d, r6=%d, r7=%d\n",
+    $display("Register===========================================================");
+    $display(" r0=%4d,  r1=%4d,  r2=%4d,  r3=%4d,  r4=%4d,  r5=%4d,  r6=%4d,  r7=%4d",
     cpu.RF.Reg_File[0], cpu.RF.Reg_File[1], cpu.RF.Reg_File[2], cpu.RF.Reg_File[3], cpu.RF.Reg_File[4], 
     cpu.RF.Reg_File[5], cpu.RF.Reg_File[6], cpu.RF.Reg_File[7],
     );
-    $display("r8=%d, r9=%d, r10=%d, r11=%d, r12=%d, r13=%d, r14=%d, r15=%d\n",
+    $display(" r8=%4d,  r9=%4d, r10=%4d, r11=%4d, r12=%4d, r13=%4d, r14=%4d, r15=%4d",
     cpu.RF.Reg_File[8], cpu.RF.Reg_File[9], cpu.RF.Reg_File[10], cpu.RF.Reg_File[11], cpu.RF.Reg_File[12], 
     cpu.RF.Reg_File[13], cpu.RF.Reg_File[14], cpu.RF.Reg_File[15],
     );
-    $display("r16=%d, r17=%d, r18=%d, r19=%d, r20=%d, r21=%d, r22=%d, r23=%d\n",
+    $display("r16=%4d, r17=%4d, r18=%4d, r19=%4d, r20=%4d, r21=%4d, r22=%4d, r23=%4d",
     cpu.RF.Reg_File[16], cpu.RF.Reg_File[17], cpu.RF.Reg_File[18], cpu.RF.Reg_File[19], cpu.RF.Reg_File[20], 
     cpu.RF.Reg_File[21], cpu.RF.Reg_File[22], cpu.RF.Reg_File[23],
     );
-    $display("r24=%d, r25=%d, r26=%d, r27=%d, r28=%d, r29=%d, r30=%d, r31=%d\n",
+    $display("r24=%4d, r25=%4d, r26=%4d, r27=%4d, r28=%4d, r29=%4d, r30=%4d, r31=%4d",
     cpu.RF.Reg_File[24], cpu.RF.Reg_File[25], cpu.RF.Reg_File[26], cpu.RF.Reg_File[27], cpu.RF.Reg_File[28], 
     cpu.RF.Reg_File[29], cpu.RF.Reg_File[30], cpu.RF.Reg_File[31],
     );
 
-    $display("\nMemory===========================================================\n");
-    $display("m0=%d, m1=%d, m2=%d, m3=%d, m4=%d, m5=%d, m6=%d, m7=%d\n\nm8=%d, m9=%d, m10=%d, m11=%d, m12=%d, m13=%d, m14=%d, m15=%d\n\nr16=%d, m17=%d, m18=%d, m19=%d, m20=%d, m21=%d, m22=%d, m23=%d\n\nm24=%d, m25=%d, m26=%d, m27=%d, m28=%d, m29=%d, m30=%d, m31=%d",							 
+    $display("Memory===========================================================");
+    $display(" m0=%4d,  m1=%4d,  m2=%4d,  m3=%4d,  m4=%4d,  m5=%4d,  m6=%4d,  m7=%4d\n m8=%4d,  m9=%4d, m10=%4d, m11=%4d, m12=%4d, m13=%4d, m14=%4d, m15=%4d\nr16=%4d, m17=%4d, m18=%4d, m19=%4d, m20=%4d, m21=%4d, m22=%4d, m23=%4d\nm24=%4d, m25=%4d, m26=%4d, m27=%4d, m28=%4d, m29=%4d, m30=%4d, m31=%4d",							 
             cpu.DM.memory[0], cpu.DM.memory[1], cpu.DM.memory[2], cpu.DM.memory[3],
             cpu.DM.memory[4], cpu.DM.memory[5], cpu.DM.memory[6], cpu.DM.memory[7],
             cpu.DM.memory[8], cpu.DM.memory[9], cpu.DM.memory[10], cpu.DM.memory[11],
@@ -91,7 +90,8 @@ always@(posedge CLK) begin
             cpu.DM.memory[24], cpu.DM.memory[25], cpu.DM.memory[26], cpu.DM.memory[27],
             cpu.DM.memory[28], cpu.DM.memory[29], cpu.DM.memory[30], cpu.DM.memory[31]
     );
-	
+
+	$display("\n\n");
 end
 
 initial begin
