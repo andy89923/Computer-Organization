@@ -97,10 +97,10 @@ Adder Add_pc(
     .sum_o(nxt_pc0)
 );
 
-assign toIFID[31: 0] = ins;
+assign toIFID[31: 0] = ins & (PCSrc ? 0 : 32'b11111111111111111111111111111111);
 assign toIFID[63:32] = nxt_pc0;
 
-assign IFID_DataWrt = (~PCSrc) & IFIDWrite;
+assign IFID_DataWrt = IFIDWrite;
 
 Pipe_Reg #(.size(64)) IF_ID(
     .clk_i(clk_i),

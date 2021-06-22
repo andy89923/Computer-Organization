@@ -11,7 +11,7 @@ struct cache_content{
 //	unsigned int	data[16];    
 };
 
-const int K=1024;
+const int K = 1024;
 
 void simulate(int cache_size, int block_size, int asso, string& test_file_name){
 	FILE * fp=fopen(test_file_name.c_str(),"r");    //read file
@@ -25,13 +25,13 @@ void simulate(int cache_size, int block_size, int asso, string& test_file_name){
 
 	int offset_bit = (int) log2(block_size);
 	int index_bit = (int) log2(cache_size/block_size);
-	int line= cache_size>>(offset_bit);
+	int line = cache_size >> (offset_bit);
 
 	cache_content *cache =new cache_content[line];
 	cout<<"cache line:"<<line<<endl;
 
 	for(int j=0;j<line;j++)
-		cache[j].v=false;
+		cache[j].v = false;
 	
 	while(fscanf(fp,"%x",&x)!=EOF){
 		cout<<hex<<x<<" ";
@@ -78,7 +78,5 @@ int main(int argc, char** argv){
     }
 	
 	// default simulate 4KB direct map cache with 16B blocks
-	simulate(cache_size*K, block_size, associativity, test_file_name);
+	simulate(cache_size * K, block_size, associativity, test_file_name);
 }
-
-
