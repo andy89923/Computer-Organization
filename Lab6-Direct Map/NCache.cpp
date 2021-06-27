@@ -24,7 +24,7 @@ NCache::NCache(int cache_size, int block_size, int associativity) {
 }
 
 void NCache::missHandle(unsigned int a, int tim) {
-	int idx = (a >> this -> ofst_bit) & ((1 << (this -> indx_bit - this -> asso_bit)) - 1);
+	int idx = (a >> this -> ofst_bit) & ((1 << (this -> indx_bit)) - 1);
 	unsigned now_tag = (a >> (this -> indx_bit + this -> ofst_bit));
 
 	int min_pos = 0, min_tim = -1, cnt = 0;
@@ -46,10 +46,10 @@ void NCache::missHandle(unsigned int a, int tim) {
 
 
 bool NCache::find(unsigned int a, int tim) {
-	int idx = (a >> this -> ofst_bit) & ((1 << (this -> indx_bit - this -> asso_bit)) - 1);
+	int idx = (a >> this -> ofst_bit) & ((1 << (this -> indx_bit)) - 1);
 	unsigned now_tag = (a >> (this -> indx_bit + this -> ofst_bit));
 
-	for (auto i : (this -> cache_contents[idx])) {
+	for (auto &i : (this -> cache_contents[idx])) {
 		if (i.isHit(now_tag, tim)) {
 			return true;
 		}

@@ -35,11 +35,11 @@ void simulate(int cache_size, int block_size, int asso, string& test_file_name, 
     fin.close();
 
     // Output 
-    cout << "Number of instruction(s): ";
-    cout << ins_cnt << '\n';
+    // cout << "Number of instruction(s): ";
+    // cout << ins_cnt << '\n';
 
-    int mis_rat = (int) mis_ins.size() * 100 / ins_cnt;
-    cout << "Miss rate: " << fixed << setprecision(1) << mis_rat << "%\n";
+    int mis_rat = (int) (mis_ins.size() * 100) / ins_cnt;
+    cout << "Miss rate: " << mis_rat << "%\n";
     
     if (!list) return;
 
@@ -58,9 +58,9 @@ int main(int argc, char** argv) {
 	int block_size = 16;
 	int associativity = 1;
 	int current_option;
-    int list = 0;
+    int list = 0, misk = 1;
 
-	while ((current_option = getopt(argc, argv, "f:c:b:a:l:")) != EOF) {
+	while ((current_option = getopt(argc, argv, "f:c:b:a:l:k:")) != EOF) {
         switch (current_option) {
             case 'f': {
                test_file_name = string(optarg);
@@ -82,9 +82,16 @@ int main(int argc, char** argv) {
                 list = atoi(optarg);
                 break;
             }
+            case 'k': {
+                misk = atoi(optarg);
+                break;
+            }
         }
     }
-    simulate(cache_size * K, block_size, associativity, test_file_name, list);
+    if (misk)
+        simulate(cache_size * K, block_size, associativity, test_file_name, list);
+    else
+        simulate(cache_size, block_size, associativity, test_file_name, list);
 
 	return 0;
 }
