@@ -9,18 +9,20 @@ using namespace std;
 
 class NCache {
 private:
-	int ass, blo, num;
+	int ass, blo, siz;
 	vector<vector<CacheContent> > cache_contents;
 
 	int ofst_bit;
 	int indx_bit;
+	int asso_bit;
 	int line;
 
 public:
 	NCache();
 	NCache(int, int, int);
 	
-	bool find(unsigned int);
+	void missHandle(unsigned int, int);
+	bool find(unsigned int, int);
 };
 
 #endif
